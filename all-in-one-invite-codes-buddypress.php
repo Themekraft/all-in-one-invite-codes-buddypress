@@ -5,6 +5,7 @@
  * Plugin URI: https://themekraft.com/products/all-in-one-invite-codes-buddypress/
  * Description: Create Invite only Forms
  * Version: 1.0.7-beta.1
+ * Requires Plugins: all-in-one-invite-codes
  * Author: ThemeKraft
  * Author URI: https://themekraft.com/
  * Licence: GPLv3
@@ -30,6 +31,76 @@
  *
  ****************************************************************************
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( ! function_exists( 'all_in_one_invite_codes_addon_plugin_dependencies_slug' ) ) {
+	/**
+	 * Let the running All in One Invite Codes copy (free or premium) satisfy
+	 * "Requires Plugins: all-in-one-invite-codes".
+	 *
+	 * @param string $slug Dependency slug.
+	 *
+	 * @return string
+	 */
+	function all_in_one_invite_codes_addon_plugin_dependencies_slug( $slug ) {
+		if ( 'all-in-one-invite-codes' === $slug && defined( 'TK_ALL_IN_ONE_INVITE_CODES_INSTALL_PATH' ) ) {
+			return basename( TK_ALL_IN_ONE_INVITE_CODES_INSTALL_PATH );
+		}
+
+		return $slug;
+	}
+
+	add_filter( 'wp_plugin_dependencies_slug', 'all_in_one_invite_codes_addon_plugin_dependencies_slug' );
+}
+
+/**
+ * Whether All in One Invite Codes (free or premium) is active and in place.
+ *
+ * Read from the active plugin lists because this add-on loads before its parent,
+ * so the parent's functions do not exist yet when this file runs.
+ *
+ * @return bool
+ */
+function aioic_buddypress_parent_is_active() {
+	$active_plugins = (array) get_option( 'active_plugins', array() );
+	if ( is_multisite() ) {
+		$active_plugins = array_merge( $active_plugins, array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) ) );
+	}
+
+	foreach ( array( 'all-in-one-invite-codes', 'all-in-one-invite-codes-premium' ) as $folder ) {
+		$basename = $folder . '/all-in-one-invite-codes.php';
+		if ( in_array( $basename, $active_plugins, true ) && file_exists( WP_PLUGIN_DIR . '/' . $basename ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Admin notice shown while All in One Invite Codes is missing.
+ */
+function aioic_buddypress_parent_missing_notice() {
+	if ( ! current_user_can( 'activate_plugins' ) ) {
+		return;
+	}
+
+	printf(
+		'<div class="notice notice-error"><p>%s</p></div>',
+		esc_html__( 'All in One Invite Codes BuddyPress is not running because All in One Invite Codes is not active.', 'all-in-one-invite-codes-buddypress' )
+	);
+}
+
+// Without the parent, every hook below would call functions that do not exist.
+if ( ! aioic_buddypress_parent_is_active() ) {
+	add_action( 'admin_notices', 'aioic_buddypress_parent_missing_notice' );
+
+	return;
+}
+
 add_action('wp_enqueue_scripts', 'aioic_buddypress_scripts', 100, 1);
 require_once('aioic-invites-widget.php');
 add_action('widgets_init', 'aioic_register_widget');
