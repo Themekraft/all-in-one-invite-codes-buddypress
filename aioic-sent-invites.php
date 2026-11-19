@@ -1,12 +1,16 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 ?>
 <h2 class="screen-heading general-settings-screen">
-    <?php _e( 'Sent Invites', 'buddyboss' ); ?>
+    <?php esc_html_e( 'Sent Invites', 'buddyboss' ); ?>
 </h2>
 
     <p class="info invite-info">
-        <?php _e( 'You have sent invitation emails to the following people:', 'buddyboss' ); ?>
+        <?php esc_html_e( 'You have sent invitation emails to the following people:', 'buddyboss' ); ?>
     </p>
     <table class="invite-settings bp-tables-user" id="<?php echo esc_attr( 'member-invites-table' ); ?>">
         <thead>
@@ -46,21 +50,21 @@
 
                 <tr>
                     <td class="field-name">
-                        <span><?php echo $email; ?></span>
+                        <span><?php echo esc_html( $email ); ?></span>
                     </td>
                     <td class="field-email">
-                        <span><?php echo $generate_codes; ?></span>
+                        <span><?php echo esc_html( $generate_codes ); ?></span>
                     </td>
                     <td class="field-email">
 					<span>
 						<?php
                         $date = get_the_date( '',get_the_ID() );
-                        echo $date;
+                        echo esc_html( $date );
                         ?>
 					</span>
                     </td>
                     <td class="field-email">
-                        <span><?php echo get_post_meta( get_the_ID(), 'tk_all_in_one_invite_code_status', true ); ?></span>
+                        <span><?php echo esc_html( get_post_meta( get_the_ID(), 'tk_all_in_one_invite_code_status', true ) ); ?></span>
                     </td>
 
                 </tr>
@@ -83,14 +87,14 @@
 
             $current_page = max(1, get_query_var('paged'));
 
-            echo paginate_links(array(
+            echo wp_kses_post( paginate_links(array(
                 'base' => get_pagenum_link(1) . '%_%',
                 'format' => '?paged=%#%',
                 'current' => $current_page,
                 'total' => $total_pages,
                 'prev_text'    => __('« Prev', 'buddyboss'),
                 'next_text'    => __('Next »', 'buddyboss'),
-            ));
+            )) );
         }
 
         wp_reset_postdata();

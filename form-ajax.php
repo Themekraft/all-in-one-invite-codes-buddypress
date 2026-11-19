@@ -1,19 +1,24 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 
 add_action('wp_ajax_aioic_send_multiple_invites', 'aioic_send_multiple_invites');
 function aioic_send_multiple_invites()
 {
     $form_data = array();
 
-    if ( isset( $_POST['data'] ) ) {
-        parse_str( $_POST['data'], $form_data );
+    // The nonce is part of the serialized form data and is verified right below.
+    if ( isset( $_POST['data'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- see above.
+        parse_str( wp_unslash( $_POST['data'] ), $form_data ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- serialized form; the parsed fields are handled one by one below.
         $_POST = $form_data;
     }
     $json_array = array();
 
     //Check nonce
-    $buddyforms_form_nonce_value = $_POST['_wpnonce'];
+    $buddyforms_form_nonce_value = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( $_POST['_wpnonce'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- this is the nonce being verified; $_POST was replaced by the already unslashed form data.
 
     $nonce_result = wp_verify_nonce( $buddyforms_form_nonce_value, 'buddyforms_form_nonce' );
 
@@ -53,8 +58,11 @@ function aioic_send_multiple_invites()
 
         if ( ! empty( $email ) ) {
             $all_in_one_invite_codes_mail_templates = get_option( 'all_in_one_invite_codes_mail_templates' );
-            $subject     =  empty($form_data['aioic_bp_subject']) ? __("Dear ".$invitee.", You've Been Invited!","all-in-one-invite-code") : sanitize_text_field($form_data['aioic_bp_subject']) ;
-            $body        =  empty($form_data['aioic_bp_body']) ?  __("You got an invite from the site [site_name]. Please use this link to register with your invite code [invite_link]","all-in-one-invite-code") :sanitize_text_field($form_data['aioic_bp_body']) ;
+            $subject     =  empty($form_data['aioic_bp_subject'])
+                /* translators: %s: invitee name */
+                ? sprintf( __( "Dear %s, You've Been Invited!", 'all-in-one-invite-codes-buddypress' ), $invitee )
+                : sanitize_text_field($form_data['aioic_bp_subject']) ;
+            $body        =  empty($form_data['aioic_bp_body']) ?  __("You got an invite from the site [site_name]. Please use this link to register with your invite code [invite_link]","all-in-one-invite-codes-buddypress") :sanitize_text_field($form_data['aioic_bp_body']) ;
             $site_name = get_bloginfo( 'name' );
             $subject   = all_in_one_invite_codes_replace_shortcode( $subject, '[site_name]', $site_name );
             $subject   = all_in_one_invite_codes_replace_shortcode( $subject, '[invite_code]', $tk_invite_code );
@@ -82,7 +90,8 @@ function aioic_send_multiple_invites()
             $send    = wp_mail( $email, $subject, $body, $headers );
             // IF something went wrong during the sent message process
             if ( ! $send ) {
-                $json['error'] = __( 'Invite : '.$email.'  could not get send. Please contact the Support.', 'all-in-one-invite-code' );
+                /* translators: %s: recipient email */
+                $json['error'] = sprintf( __( 'Invite : %s  could not get send. Please contact the Support.', 'all-in-one-invite-codes-buddypress' ), $email );
                 echo json_encode( $json );
                 die();
             }
@@ -91,7 +100,8 @@ function aioic_send_multiple_invites()
     }
     $json['form_remove'] = 'true';
 
-    $json['message'] = __( $invite_count. ' Invites sent out successfully', 'all-in-one-invite-code' );;
+    /* translators: %d: number of invites sent */
+    $json['message'] = sprintf( __( '%d Invites sent out successfully', 'all-in-one-invite-codes-buddypress' ), $invite_count );
     echo json_encode( $json );
     die();
 
