@@ -126,7 +126,10 @@ function aioic_buddypress_scripts()
 {
     wp_enqueue_style('aioic_style', plugins_url('/', __FILE__) . 'assets/css/main.css', array(), false, false);
     wp_enqueue_style('jquery-ui-styles', plugins_url('/', __FILE__) . 'assets/css/jquery-ui.css', array(), false, false);
-    wp_enqueue_script('aioic_buddypress',  plugins_url('/', __FILE__) . 'assets/js/aioic_buddypress.js', array('jquery', 'bp-api-request'), false, true);
+    // bp-api-request only exists while BuddyPress is active; WordPress would drop the script without it anyway.
+    if (wp_script_is('bp-api-request', 'registered')) {
+        wp_enqueue_script('aioic_buddypress',  plugins_url('/', __FILE__) . 'assets/js/aioic_buddypress.js', array('jquery', 'bp-api-request'), false, true);
+    }
     wp_enqueue_style('aioic_bb_icons', plugins_url('/', __FILE__) . 'assets/icons/aioic-bb-icons.css', array(), false, false);
     wp_enqueue_script('buddyforms-loadingoverlay', plugins_url('/', __FILE__) . 'assets/loadingoverlay/loadingoverlay.min.js', array('jquery'));
     wp_enqueue_script('jquery-validation', plugins_url('/', __FILE__) . 'assets/js/jquery.validate.js', array('jquery'));
@@ -331,7 +334,7 @@ function all_in_one_invite_codes_buddypress_settings_page_tab($tab)
                                         echo '<select name="all_in_one_invite_codes_buddypress[profile_tab]" id="all_in_one_invite_codes_buddypress_profile_tab">';
 
                                         foreach ($pages as $page_id => $page_name) {
-                                            echo '<option ' . selected($all_in_one_invite_codes_buddypress['profile_tab'], $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
+                                            echo '<option ' . selected(isset($all_in_one_invite_codes_buddypress['profile_tab']) ? $all_in_one_invite_codes_buddypress['profile_tab'] : '', $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
                                         }
                                         echo '</select>';
                                     }
@@ -351,7 +354,7 @@ function all_in_one_invite_codes_buddypress_settings_page_tab($tab)
                                         echo '<select name="all_in_one_invite_codes_buddypress[registration]" id="all_in_one_invite_codes_buddypress_registration">';
 
                                         foreach ($pages as $page_id => $page_name) {
-                                            echo '<option ' . selected($all_in_one_invite_codes_buddypress['registration'], $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
+                                            echo '<option ' . selected(isset($all_in_one_invite_codes_buddypress['registration']) ? $all_in_one_invite_codes_buddypress['registration'] : '', $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
                                         }
                                         echo '</select>';
                                     }
@@ -371,7 +374,7 @@ function all_in_one_invite_codes_buddypress_settings_page_tab($tab)
                                         echo '<select name="all_in_one_invite_codes_buddypress[autofollow]" id="all_in_one_invite_codes_buddypress_autofollow">';
 
                                         foreach ($pages as $page_id => $page_name) {
-                                            echo '<option ' . selected($all_in_one_invite_codes_buddypress['autofollow'], $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
+                                            echo '<option ' . selected(isset($all_in_one_invite_codes_buddypress['autofollow']) ? $all_in_one_invite_codes_buddypress['autofollow'] : '', $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
                                         }
                                         echo '</select>';
                                     }
@@ -394,7 +397,7 @@ function all_in_one_invite_codes_buddypress_settings_page_tab($tab)
                                         echo '<select name="all_in_one_invite_codes_buddypress[autoconnect]" id="all_in_one_invite_codes_buddypress_autoconnect">';
 
                                         foreach ($pages as $page_id => $page_name) {
-                                            echo '<option ' . selected($all_in_one_invite_codes_buddypress['autoconnect'], $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
+                                            echo '<option ' . selected(isset($all_in_one_invite_codes_buddypress['autoconnect']) ? $all_in_one_invite_codes_buddypress['autoconnect'] : '', $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
                                         }
                                         echo '</select>';
                                     }
@@ -420,7 +423,7 @@ function all_in_one_invite_codes_buddypress_settings_page_tab($tab)
                                         echo '<select  name="all_in_one_invite_codes_buddypress[restrict_create_invites]" id="all_in_one_invite_codes_buddypress_resctric_create_invites">';
 
                                         foreach ($pages as $page_id => $page_name) {
-                                            echo '<option ' . selected($all_in_one_invite_codes_buddypress['restrict_create_invites'], $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
+                                            echo '<option ' . selected(isset($all_in_one_invite_codes_buddypress['restrict_create_invites']) ? $all_in_one_invite_codes_buddypress['restrict_create_invites'] : '', $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
                                         }
                                         echo '</select>';
                                     }
@@ -447,7 +450,7 @@ function all_in_one_invite_codes_buddypress_settings_page_tab($tab)
                                         echo '<select  name="all_in_one_invite_codes_buddypress[restrict_invite_friends]" id="all_in_one_invite_codes_buddypress_resctric_invite_friends">';
 
                                         foreach ($pages as $page_id => $page_name) {
-                                            echo '<option ' . selected($all_in_one_invite_codes_buddypress['restrict_invite_friends'], $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
+                                            echo '<option ' . selected(isset($all_in_one_invite_codes_buddypress['restrict_invite_friends']) ? $all_in_one_invite_codes_buddypress['restrict_invite_friends'] : '', $page_id) . 'value="' . $page_id . '">' . $page_name . '</option>';
                                         }
                                         echo '</select>';
                                     }
