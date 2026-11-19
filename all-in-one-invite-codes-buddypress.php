@@ -118,6 +118,7 @@ function aioic_register_widget()
 		 */
 function load_plugin_textdomain_aioic_buddypress() {
 
+	// phpcs:ignore PluginCheck.CodeAnalysis.DiscouragedFunctions.load_plugin_textdomainFound -- Kept on purpose: premium copies and builds not hosted on wordpress.org load their own translations from /languages.
 	load_plugin_textdomain( 'all-in-one-invite-codes-buddypress', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 }
 
