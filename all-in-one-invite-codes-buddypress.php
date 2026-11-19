@@ -503,6 +503,31 @@ function aioic_buddypress_registration_enabled()
     return aioic_buddypress_setting_enabled('registration', true);
 }
 
+/**
+ * Apply "Restrict create invite codes" and "Restrict invite friends" to the
+ * front-end requests as well, not only to the forms: members who are not
+ * administrators cannot create codes or send invites while they are on.
+ */
+function aioic_buddypress_enforce_restrictions()
+{
+    if (current_user_can('manage_options')) {
+        return;
+    }
+
+    $action = current_action();
+    if (in_array($action, array('wp_ajax_all_in_one_invite_codes_create_code', 'wp_ajax_aioic_send_multiple_invites'), true)
+        && aioic_buddypress_setting_enabled('restrict_create_invites', false)) {
+        wp_send_json(array('error' => esc_html__('Creating invite codes has been disabled. Contact the Administrator.', 'all-in-one-invite-codes-buddypress')));
+    }
+
+    if ('wp_ajax_all_in_one_invite_codes_send_invite' === $action && aioic_buddypress_setting_enabled('restrict_invite_friends', false)) {
+        wp_send_json(array('error' => esc_html__('Sending invites has been disabled. Contact the Administrator.', 'all-in-one-invite-codes-buddypress')));
+    }
+}
+add_action('wp_ajax_all_in_one_invite_codes_create_code', 'aioic_buddypress_enforce_restrictions', 1);
+add_action('wp_ajax_aioic_send_multiple_invites', 'aioic_buddypress_enforce_restrictions', 1);
+add_action('wp_ajax_all_in_one_invite_codes_send_invite', 'aioic_buddypress_enforce_restrictions', 1);
+
 add_action('bp_signup_profile_fields', 'all_in_one_invite_codes_bp_after_profile_field_content');
 // Without Extended Profiles BuddyPress has no profile fields section: show the field with the account details.
 add_action('bp_account_details_fields', 'aioic_buddypress_account_details_invite_field');
