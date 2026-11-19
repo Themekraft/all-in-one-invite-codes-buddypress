@@ -9,7 +9,8 @@
  * Requires Plugins: all-in-one-invite-codes
  * Author: ThemeKraft
  * Author URI: https://themekraft.com/
- * License: GPLv3
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: all-in-one-invite-codes-buddypress
  * Domain Path: /languages
  *
