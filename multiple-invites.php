@@ -59,7 +59,7 @@ $create_invites_restricted =  isset($all_in_one_invite_codes_buddypress['restric
 
                     <tbody>
                     <?php
-                    $raw = apply_filters( 'bp_invites_member_default_invitation_raw', 1 );
+                    $raw = apply_filters( 'aioic_buddypress_invites_member_default_invitation_raw', apply_filters_deprecated( 'bp_invites_member_default_invitation_raw', array( 1 ), '1.0.9', 'aioic_buddypress_invites_member_default_invitation_raw' ) );
                     for ( $i = 0; $i < $raw; $i++ ) {
                         ?>
 
