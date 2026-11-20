@@ -4,7 +4,7 @@
  * Plugin Name: All in One Invite Codes BuddyPress
  * Plugin URI: https://themekraft.com/products/all-in-one-invite-codes-buddypress/
  * Description: Create Invite only Forms
- * Version: 1.0.7
+ * Version: 1.0.8
  * Requires PHP: 7.4
  * Requires Plugins: all-in-one-invite-codes
  * Author: ThemeKraft
