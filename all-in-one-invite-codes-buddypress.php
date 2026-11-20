@@ -494,13 +494,19 @@ function aioic_buddypress_setting_enabled($key, $default)
 }
 
 /**
- * Whether the BuddyPress registration asks for an invite code ("BuddyPress Registration" setting).
+ * Whether the BuddyPress registration asks for an invite code.
+ *
+ * The "BuddyPress Registration" setting was never applied before, so some sites
+ * have it saved as "Disable" without knowing it. Applying it now would open their
+ * registration on update, so the code stays required until the setting gets a
+ * confirmation step in wp-admin. Sites that want open registration can use the
+ * filter.
  *
  * @return bool
  */
 function aioic_buddypress_registration_enabled()
 {
-    return aioic_buddypress_setting_enabled('registration', true);
+    return (bool) apply_filters('aioic_buddypress_registration_requires_code', true);
 }
 
 /**
