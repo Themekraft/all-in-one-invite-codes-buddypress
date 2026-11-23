@@ -1,4 +1,8 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 $all_in_one_invite_codes_mail_templates = get_option( 'all_in_one_invite_codes_mail_templates' )
  ?>
 <style>
@@ -36,11 +40,11 @@ $create_invites_restricted =  isset($all_in_one_invite_codes_buddypress['restric
         <div class="" id="form_message_aioic"></div>
         <div class="form_wrapper clearfix">
             <h2 class="screen-heading general-settings-screen">
-                <?php _e( 'Send Invites', 'all_in_one_invite_codes-buddypress' ); ?>
+                <?php esc_html_e( 'Send Invites', 'all-in-one-invite-codes-buddypress' ); ?>
             </h2>
 
             <p class="info invite-info">
-                <?php _e( 'Invite non-members to create an account. They will receive an email with a link to register.', 'all_in_one_invite_codes-buddypress' ); ?>
+                <?php esc_html_e( 'Invite non-members to create an account. They will receive an email with a link to register.', 'all-in-one-invite-codes-buddypress' ); ?>
             </p>
 
             <form action="<?php echo esc_url( bp_displayed_user_domain() . '/all-in-one-invite-codes/multiple-invites/' ); ?>" method="post"  class="" id="send-invite-aioic">
@@ -49,9 +53,9 @@ $create_invites_restricted =  isset($all_in_one_invite_codes_buddypress['restric
                 <table class="aioci-invite-settings bp-tables-user" id="<?php echo esc_attr( 'member-invites-table' ); ?>">
                     <thead>
                     <tr>
-                        <th class="title"><?php esc_html_e( 'Recipient Name', 'all_in_one_invite_codes-buddypress' ); ?></th>
-                        <th class="title"><?php esc_html_e( 'Recipient Email', 'all_in_one_invite_codes-buddypress' ); ?></th>
-                        <th class="title"><?php esc_html_e( 'Invites Amount', 'all_in_one_invite_codes-buddypress' ); ?></th>
+                        <th class="title"><?php esc_html_e( 'Recipient Name', 'all-in-one-invite-codes-buddypress' ); ?></th>
+                        <th class="title"><?php esc_html_e( 'Recipient Email', 'all-in-one-invite-codes-buddypress' ); ?></th>
+                        <th class="title"><?php esc_html_e( 'Invites Amount', 'all-in-one-invite-codes-buddypress' ); ?></th>
 
                         <th class="title actions"></th>
                     </tr>
@@ -66,13 +70,13 @@ $create_invites_restricted =  isset($all_in_one_invite_codes_buddypress['restric
 
                         <tr>
                             <td class="field-name">
-                                <input required="true" type="text" name="invitee[<?php echo $i; ?>][]" id="invitee_<?php echo $i; ?>_title"  class="invites-input"/>
+                                <input required="true" type="text" name="invitee[<?php echo (int) $i; ?>][]" id="invitee_<?php echo (int) $i; ?>_title"  class="invites-input"/>
                             </td>
                             <td class="field-email">
-                                <input required="true" type="email" data-rule-aioic-email="true" name="email[<?php echo $i; ?>][]" id="email_<?php echo $i; ?>_email" value="<?php echo esc_attr( '' ); ?>" class="invites-input" <?php bp_form_field_attributes( 'email' ); ?>/>
+                                <input required="true" type="email" data-rule-aioic-email="true" name="email[<?php echo (int) $i; ?>][]" id="email_<?php echo (int) $i; ?>_email" value="<?php echo esc_attr( '' ); ?>" class="invites-input" <?php bp_form_field_attributes( 'email' ); ?>/>
                             </td>
                             <td class="field-amount">
-                                <input required="true"type="number" name="invite_amount[<?php echo $i; ?>][]" id="invite_amount_<?php echo $i; ?>_invite_amount" value="<?php echo esc_attr( '' ); ?>" class="invites-input" <?php bp_form_field_attributes( 'email' ); ?>/>
+                                <input required="true"type="number" name="invite_amount[<?php echo (int) $i; ?>][]" id="invite_amount_<?php echo (int) $i; ?>_invite_amount" value="<?php echo esc_attr( '' ); ?>" class="invites-input" <?php bp_form_field_attributes( 'email' ); ?>/>
                             </td>
 
                             <td class="field-actions">
@@ -94,15 +98,15 @@ $create_invites_restricted =  isset($all_in_one_invite_codes_buddypress['restric
 
                 <div id="tk_all_in_one_invite_code_send_invite_form">
 
-                    <p><?php _e('Subject:', 'all-in-one-invite-codes-buddypress'); ?> <input type="text" id="tk_all_in_one_invite_code_send_invite_subject" name="aioic_bp_subject"
-                                                                                             value="<?php echo empty( $all_in_one_invite_codes_mail_templates['subject'] ) ? '' : $all_in_one_invite_codes_mail_templates['subject']; ?>">
+                    <p><?php esc_html_e('Subject:', 'all-in-one-invite-codes-buddypress'); ?> <input type="text" id="tk_all_in_one_invite_code_send_invite_subject" name="aioic_bp_subject"
+                                                                                             value="<?php echo empty( $all_in_one_invite_codes_mail_templates['subject'] ) ? '' : esc_attr( $all_in_one_invite_codes_mail_templates['subject'] ); ?>">
                     </p>
-                    <p><?php _e('Message Text:', 'all-in-one-invite-codes-buddypress'); ?> <textarea cols="70" rows="5"
+                    <p><?php esc_html_e('Message Text:', 'all-in-one-invite-codes-buddypress'); ?> <textarea cols="70" rows="5"
                                                                                                      id="tk_all_in_one_invite_code_send_invite_message_text"
                                                                                                      name="aioic_bp_body">
-                    <?php echo empty( $all_in_one_invite_codes_mail_templates['message_text'] ) ? '' : $all_in_one_invite_codes_mail_templates['message_text']; ?></textarea>
+                    <?php echo empty( $all_in_one_invite_codes_mail_templates['message_text'] ) ? '' : esc_textarea( $all_in_one_invite_codes_mail_templates['message_text'] ); ?></textarea>
                     </p>
-                    <input type="submit" name="aioic-invite-submit" id="submit"  value="<?php _e('Send Invites', 'all-in-one-invite-codes-buddypress'); ?>" class="aioic_submit">
+                    <input type="submit" name="aioic-invite-submit" id="submit"  value="<?php esc_attr_e('Send Invites', 'all-in-one-invite-codes-buddypress'); ?>" class="aioic_submit">
                 </div>
 
 
@@ -112,7 +116,7 @@ $create_invites_restricted =  isset($all_in_one_invite_codes_buddypress['restric
         </div>
     </div>
 <?php else: ?>
-    <?php _e( 'Create  Multiple Invite Codes has been disabled. Contact the Administrator.', 'all_in_one_invite_codes-buddypress' ); ?>
+    <?php esc_html_e( 'Create  Multiple Invite Codes has been disabled. Contact the Administrator.', 'all-in-one-invite-codes-buddypress' ); ?>
 
 <?php endif ?>
 

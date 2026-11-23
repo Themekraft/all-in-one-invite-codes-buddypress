@@ -6,14 +6,14 @@ defined( 'ABSPATH' ) || exit;
 
     function __construct()
     {
-        parent::__construct("aioic_invites_widget", __("AIOIC Invites",'all_in_one_invite_codes'), array('description'=>__("Show the current member Invites Status.",'all_in_one_invite_codes')), );
+        parent::__construct("aioic_invites_widget", __("AIOIC Invites",'all-in-one-invite-codes-buddypress'), array('description'=>__("Show the current member Invites Status.",'all-in-one-invite-codes-buddypress')), );
 
 
     }
 
      public function widget( $args, $instance ) {
          $title = apply_filters( 'widget_title', $instance['title'] );
-         echo $args['before widget'];
+         echo $args['before widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- sidebar markup registered by the theme.
 
          if(is_user_logged_in()){
             $cuser = wp_get_current_user();
@@ -40,9 +40,9 @@ defined( 'ABSPATH' ) || exit;
 
                         }
                         $current_amount = $code_total-$code_amount;
-                        $active_codes[] = sprintf('<li> %s(%d/%d) </li>',$code,$code_amount,$code_total);
+                        $active_codes[] = sprintf('<li> %s(%d/%d) </li>',esc_html($code),$code_amount,$code_total);
                         if($current_amount > 0){
-                            $used_codes[]   = sprintf(' <li> %s(%d/%d) </li>',$code,$current_amount,$code_total);
+                            $used_codes[]   = sprintf(' <li> %s(%d/%d) </li>',esc_html($code),$current_amount,$code_total);
                         }
                         
                      }
@@ -54,15 +54,15 @@ defined( 'ABSPATH' ) || exit;
              }
              //if title is present
              If ( ! empty ( $title ) )
-                 Echo $args['before_title'] . $cuser->display_name.' : '.$title . $args['after_title'];
+                 Echo $args['before_title'] . esc_html($cuser->display_name).' : '.wp_kses_post($title) . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- before_title/after_title are sidebar markup registered by the theme.
           echo '<div id="tabs">
               <ul>
-                <li style="width:45%;"><a href="#tabs-1">'.__("Active","all_in_one_invite_codes").'</a></li>
+                <li style="width:45%;"><a href="#tabs-1">'.esc_html__("Active",'all-in-one-invite-codes-buddypress').'</a></li>
               
-                <li style="width:45%;"><a href="#tabs-2">'.__("Used","all_in_one_invite_codes").'</a></li>
+                <li style="width:45%;"><a href="#tabs-2">'.esc_html__("Used",'all-in-one-invite-codes-buddypress').'</a></li>
               </ul>
-              <div id="tabs-1"><ul>'.implode("",$active_codes).'</ul></div>
-              <div id="tabs-2"><ul>'.implode("",$used_codes) .'</ul></div>
+              <div id="tabs-1"><ul>'.wp_kses_post(implode("",$active_codes)).'</ul></div>
+              <div id="tabs-2"><ul>'.wp_kses_post(implode("",$used_codes)) .'</ul></div>
             </div>';
                 echo ' <script>
              jQuery( function() {
@@ -71,24 +71,24 @@ defined( 'ABSPATH' ) || exit;
                </script>';
        }else{
              If ( ! empty ( $title ) )
-                 Echo $args['before_title'] .$title . $args['after_title'];
+                 Echo $args['before_title'] .wp_kses_post($title) . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- before_title/after_title are sidebar markup registered by the theme.
 
-             echo '<a href="'.wp_login_url().'">'.__('Please log in','all_in_one_invite_codes').'</a>' ;
+             echo '<a href="'.esc_url(wp_login_url()).'">'.esc_html__('Please log in','all-in-one-invite-codes-buddypress').'</a>' ;
          }
 
 
-        echo $args['after_widget'];
+        echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- sidebar markup registered by the theme.
      }
 
      public function form( $instance ) {
          if ( isset( $instance[ 'title' ] ) )
              $title = $instance[ 'title' ];
          else
-             $title = __( 'Invites Codes', 'all_in_one_invite_codes' );
+             $title = __( 'Invites Codes', 'all-in-one-invite-codes-buddypress' );
          ?>
          <p>
-             <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
-             <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+             <label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Title:' ); // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- reuses the WordPress core string. ?></label>
+             <input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
          </p>
          <?php
      }
