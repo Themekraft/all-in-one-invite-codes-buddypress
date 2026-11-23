@@ -22,7 +22,7 @@
 
         <?php
         $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-        $sent_invites_pagination_count = apply_filters( 'sent_invites_pagination_count', 25 );
+        $sent_invites_pagination_count = apply_filters( 'aioic_buddypress_sent_invites_pagination_count', apply_filters_deprecated( 'sent_invites_pagination_count', array( 25 ), '1.0.9', 'aioic_buddypress_sent_invites_pagination_count' ) );
         $args = array(
             'posts_per_page' => $sent_invites_pagination_count,
             'post_type'      => 'tk_invite_codes',

@@ -105,7 +105,7 @@ if ( ! aioic_buddypress_parent_is_active() ) {
 add_action('wp_enqueue_scripts', 'aioic_buddypress_scripts', 100, 1);
 require_once('aioic-invites-widget.php');
 add_action('widgets_init', 'aioic_register_widget');
-add_action( 'init', 'load_plugin_textdomain_aioic_buddypress' ) ;
+add_action( 'init', 'aioic_buddypress_load_textdomain' ) ;
 function aioic_register_widget()
 {
     register_widget('Aioic_Invites_Widget');
@@ -117,7 +117,7 @@ function aioic_register_widget()
 		 * @package all_in_one_invite_codes
 		 * @since  0.1
 		 */
-function load_plugin_textdomain_aioic_buddypress() {
+function aioic_buddypress_load_textdomain() {
 
 	load_plugin_textdomain( 'all-in-one-invite-codes-buddypress', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 }
@@ -195,10 +195,10 @@ function all_in_one_invite_codes_profile_tab()
 }
 
 $all_in_one_invite_codes_buddypress_options = get_option('all_in_one_invite_codes_buddypress');
-$invite_friends_restricted =  isset($all_in_one_invite_codes_buddypress_options['restrict_invite_friends']) ? $all_in_one_invite_codes_buddypress_options['restrict_invite_friends'] === 'enabled' ? true : false : false;
+$aioic_buddypress_invite_friends_restricted =  isset($all_in_one_invite_codes_buddypress_options['restrict_invite_friends']) ? $all_in_one_invite_codes_buddypress_options['restrict_invite_friends'] === 'enabled' ? true : false : false;
 // "Profile Integration" turns the Invite Friends profile tab off.
-$profile_tab_disabled = isset($all_in_one_invite_codes_buddypress_options['profile_tab']) && 'disable' === $all_in_one_invite_codes_buddypress_options['profile_tab'];
-if($invite_friends_restricted ==false && !$profile_tab_disabled){
+$aioic_buddypress_profile_tab_disabled = isset($all_in_one_invite_codes_buddypress_options['profile_tab']) && 'disable' === $all_in_one_invite_codes_buddypress_options['profile_tab'];
+if($aioic_buddypress_invite_friends_restricted ==false && !$aioic_buddypress_profile_tab_disabled){
     add_action('bp_setup_nav', 'all_in_one_invite_codes_profile_tab');
 }
 
@@ -566,8 +566,8 @@ function all_in_one_invite_codes_bp_after_profile_field_content()
 
 }
 
-add_action('bp_signup_validate', 'test_bp_signup_validate');
-function test_bp_signup_validate()
+add_action('bp_signup_validate', 'aioic_buddypress_signup_validate');
+function aioic_buddypress_signup_validate()
 {
     global $bp;
 
@@ -844,13 +844,13 @@ if (!function_exists('br_fs')) {
         return $br_fs;
     }
 }
-function br_fs_is_parent_active_and_loaded()
+function aioic_buddypress_fs_is_parent_active_and_loaded()
 {
     // Check if the parent's init SDK method exists.
     return function_exists('all_in_one_invite_codes_core_fs');
 }
 
-function br_fs_is_parent_active()
+function aioic_buddypress_fs_is_parent_active()
 {
     $active_plugins = get_option('active_plugins', array());
 
@@ -871,9 +871,9 @@ function br_fs_is_parent_active()
     return false;
 }
 
-function br_fs_init()
+function aioic_buddypress_fs_init()
 {
-    if (br_fs_is_parent_active_and_loaded()) {
+    if (aioic_buddypress_fs_is_parent_active_and_loaded()) {
         // Init Freemius.
         br_fs();
 
@@ -888,13 +888,13 @@ function br_fs_init()
     }
 }
 
-if (br_fs_is_parent_active_and_loaded()) {
+if (aioic_buddypress_fs_is_parent_active_and_loaded()) {
     // If parent already included, init add-on.
-    br_fs_init();
-} else if (br_fs_is_parent_active()) {
+    aioic_buddypress_fs_init();
+} else if (aioic_buddypress_fs_is_parent_active()) {
     // Init add-on only after the parent is loaded.
-    add_action('all_in_one_invite_codes_core_fs_loaded', 'br_fs_init');
+    add_action('all_in_one_invite_codes_core_fs_loaded', 'aioic_buddypress_fs_init');
 } else {
     // Even though the parent is not activated, execute add-on for activation / uninstall hooks.
-    br_fs_init();
+    aioic_buddypress_fs_init();
 }
